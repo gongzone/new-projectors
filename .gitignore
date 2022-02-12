@@ -1,0 +1,11 @@
+### Common ###
+.vscode/
+.cache/
+
+### Front ###
+node_modules/
+.env
+
+## Back ###
+env/
+secrets.json
