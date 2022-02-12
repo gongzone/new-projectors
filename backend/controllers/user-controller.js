@@ -3,8 +3,10 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+
 const User = require("../models/User");
 const RefreshToken = require("../models/RefreshToken");
+const { createCustomError } = require("../errors/custom-error");
 
 // helper functions...
 const setTokenCookie = (res, token) => {
@@ -17,7 +19,7 @@ const setTokenCookie = (res, token) => {
 };
 
 const generateJwtToken = (user) => {
-  // create a jwt token containing the user id that expires in 15 minutes
+  // create a jwt token containing the user id that expires in 30 minutes
   return jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "30m",
   });
@@ -25,7 +27,6 @@ const generateJwtToken = (user) => {
 
 const generateRefreshToken = (user) => {
   // create a refresh token that expires in 7 days
-
   return new RefreshToken({
     user: user.id,
     token: crypto.randomBytes(40).toString("hex"),
@@ -34,22 +35,20 @@ const generateRefreshToken = (user) => {
 };
 
 const getRefreshToken = async (res, token) => {
-  try {
-    const refreshToken = await RefreshToken.findOne({ token }).populate("user");
-    console.log(`refreshToken is Expired?: ${refreshToken.isExpired}`);
+  const refreshToken = await RefreshToken.findOne({ token }).populate("user");
 
-    if (!refreshToken) throw "토큰 정보가 없습니다.";
+  if (!refreshToken) throw createCustomError("토큰 정보가 없습니다.", 401);
 
-    if (refreshToken.isExpired) {
-      await refreshToken.remove();
-      res.clearCookie("refreshToken");
-      throw "토큰 인증 기간이 만료되었습니다. 다시 로그인해주세요.";
-    }
-
-    return refreshToken;
-  } catch (err) {
-    return res.status(400).json({ msg: err });
+  if (refreshToken.isExpired) {
+    await refreshToken.remove();
+    res.clearCookie("refreshToken");
+    throw createCustomError(
+      "토큰의 유효시간이 경과하였습니다. 다시 로그인해 주세요",
+      403
+    );
   }
+
+  return refreshToken;
 };
 
 const filterUserDetails = (user) => {
@@ -61,21 +60,22 @@ const isValidId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
 
-// controllers... 에러핸들링 필요!!@!@!@!@!@!@!@!@!@
+// controllers...
 const createUser = async (req, res) => {
-  console.log(req.body);
-  const { email, nickname, password, password2 } = req.body;
-
-  if (password !== password2) {
-    return res.status(500).send("비밀번호가 일치하지 않습니다.");
-  }
-
   try {
+    const { email, nickname, password, password2 } = req.body;
+
+    if (password !== password2) {
+      throw createCustomError(
+        "비밀번호와 비밀번호 확인이 일치하지 않습니다.",
+        400
+      );
+    }
+
     const user = await User.create({ email, nickname, password, role: "User" });
-    res.status(201).json({ user });
+    return res.status(201).json({ user });
   } catch (err) {
-    console.log(err);
-    res.status(400).send("회원가입할 수 없습니다.");
+    next(err);
   }
 };
 
@@ -90,14 +90,12 @@ const loginUser = async (req, res, next) => {
 
     // save refresh token and set refresh token to cookie
     await refreshToken.save();
-    console.log(refreshToken.token);
     setTokenCookie(res, refreshToken.token);
 
     // return basic details and tokens
     res.status(200).json({ user: filterUserDetails(user), jwtToken });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ msg: "유저 정보 없음" });
+    next(err);
   }
 };
 
@@ -107,34 +105,38 @@ const logoutUser = async (req, res, next) => {
     const refreshToken = req.cookies.refreshToken;
 
     if (refreshToken !== req.user.refreshToken.token)
-      return res.status(401).json({ msg: "토큰이 일치하지 않습니다." });
+      throw createCustomError("토큰 정보가 일치하지 않습니다.", 401);
 
     await req.user.refreshToken.remove();
 
     res.clearCookie("refreshToken");
     res.status(200).json({ msg: "logout 성공" });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ msg: err });
+    next(err);
   }
 };
 
 const getUser = async (req, res, next) => {
-  const paramsId = req.params.id;
-  const userId = req.user.id;
-  const userRole = req.user.role;
+  try {
+    const paramsId = req.params.id;
+    const userId = req.user.id;
+    const userRole = req.user.role;
 
-  if (paramsId !== userId && userRole !== "Admin") {
-    return res.status(401).json({ message: "권한이 없습니다." });
+    if (paramsId !== userId && userRole !== "Admin") {
+      throw createCustomError("해당 접근에 대한 권한이 없습니다.", 401);
+    }
+
+    if (!isValidId(userId))
+      throw createCustomError("해당 사용자 아이디는 유효하지 않습니다.", 401);
+
+    const user = await User.findById(id);
+
+    if (!user) throw createCustomError("해당 사용자를 찾을 수 없습니다.", 401);
+
+    res.status(200).json(filterUserDetails(user));
+  } catch (err) {
+    next(err);
   }
-
-  if (!isValidId(userId)) throw "해당 사용자를 찾을 수 없습니다.";
-
-  const user = await User.findById(id);
-
-  if (!user) throw "해당 사용자를 찾을 수 없습니다.";
-
-  res.status(200).json(filterUserDetails(user));
 };
 
 const silentRefresh = async (req, res, next) => {
@@ -152,7 +154,7 @@ const silentRefresh = async (req, res, next) => {
     setTokenCookie(res, newRefreshToken.token);
     res.status(200).json({ user: filterUserDetails(user), jwtToken });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 

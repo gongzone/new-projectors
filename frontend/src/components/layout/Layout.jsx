@@ -7,7 +7,7 @@ import Footer from "./Footer";
 import { useSilentRefresh } from "../../hooks/user-api";
 
 const Layout = ({ children }) => {
-  useSilentRefresh();
+  useSilentRefresh(); // silentRefresh enable 옵션 생각, localstorage에 로그인했다는 정보를 담고 그것을 토대로 실행??
 
   return (
     <Wrapper>

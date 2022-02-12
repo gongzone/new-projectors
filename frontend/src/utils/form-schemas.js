@@ -7,7 +7,7 @@ export const signupSchema = yup.object().shape({
     .required("필수 항목 입니다."),
   nickname: yup
     .string()
-    .max(20, "닉네임은 20자리를 넘을 수 없습니다.")
+    .max(20, "닉네임은 20자리를 넘을 수 없습니다.") // nickname validation 추가 필요...
     .required("필수 항목 입니다."),
   password: yup
     .string()

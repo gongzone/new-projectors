@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const { createCustomError } = require("../errors/custom-error");
+
 const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
@@ -50,9 +52,9 @@ UserSchema.statics.login = async function (email, password) {
     if (auth) {
       return user;
     }
-    throw Error("잘못된 비밀번호 입니다.");
+    throw createCustomError("잘못된 비밀번호입니다.", 400);
   }
-  throw Error("잘못된 이메일입니다.");
+  throw createCustomError("잘못된 이메일입니다.", 400);
 };
 
 const User = mongoose.model("User", UserSchema);

@@ -5,10 +5,11 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./db/connect");
 
 const userRoute = require("./routes/user-route");
+const errorHandler = require("./middlewares/error-handler");
 
 const app = express();
 
-// middleware
+// middlewares
 app.use(express.json());
 app.use(cookieParser());
 
@@ -25,5 +26,8 @@ const start = async () => {
     console.log(error);
   }
 };
+
+// error-handle middleware
+app.use(errorHandler);
 
 start();
