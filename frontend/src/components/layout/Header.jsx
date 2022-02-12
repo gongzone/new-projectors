@@ -1,10 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import { Link, NavLink } from "react-router-dom";
-import { useGetUserDetail } from "../../hooks/user-api";
+import { useGetUserDetail, useLogout } from "../../hooks/user-api";
 
 const Header = () => {
   const query = useGetUserDetail();
+  const { mutate } = useLogout();
+
+  const logoutHandler = () => {
+    mutate();
+  };
 
   return (
     <Wrapper>
@@ -24,7 +29,9 @@ const Header = () => {
       {!query.isIdle && (
         <div className="header-user-container">
           <span>🧔 {query.data.nickname}</span>
-          <Link to="#">로그아웃</Link>
+          <Link to="#" onClick={logoutHandler}>
+            로그아웃
+          </Link>
         </div>
       )}
     </Wrapper>

@@ -4,7 +4,11 @@ import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
 
+import { useSilentRefresh } from "../../hooks/user-api";
+
 const Layout = ({ children }) => {
+  useSilentRefresh();
+
   return (
     <Wrapper>
       <Header />

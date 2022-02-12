@@ -28,8 +28,6 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  // 토큰이 만료되었는지 확인하는 작업 필요 , silent refresh 구현 필요, 전반적인 코드 다 뜯어 고쳐야
-
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>

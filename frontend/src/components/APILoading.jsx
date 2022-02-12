@@ -1,13 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import { useIsFetching } from "react-query";
+import { useIsMutating } from "react-query";
 
 import { Oval } from "react-loader-spinner";
 
 const APILoading = () => {
   const isFetching = useIsFetching();
+  const isMutating = useIsMutating();
 
-  return isFetching ? (
+  return isFetching || isMutating ? (
     <Wrapper>
       <div className="loading">
         <Oval color="#14946e" height={70} width={70} />

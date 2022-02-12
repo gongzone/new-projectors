@@ -6,6 +6,7 @@ const authorize = require("../middlewares/auth-token");
 const {
   createUser,
   loginUser,
+  logoutUser,
   getUser,
   silentRefresh,
 } = require("../controllers/user-controller");
@@ -13,6 +14,8 @@ const {
 router.route("/register/").post(createUser);
 
 router.route("/login/").post(loginUser);
+
+router.route("/logout/").post(authorize(), logoutUser);
 
 router.route("/:id/").get(authorize(), getUser);
 

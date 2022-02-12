@@ -6,16 +6,10 @@ const RefreshTokenSchema = new Schema({
   token: String,
   expires: Date,
   created: { type: Date, default: Date.now },
-  revoked: Date,
-  replacedByToken: String,
 });
 
 RefreshTokenSchema.virtual("isExpired").get(() => {
   return Date.now() >= this.expires;
-});
-
-RefreshTokenSchema.virtual("isActive").get(() => {
-  return !this.revoked && !this.isExpired;
 });
 
 RefreshTokenSchema.set("toJSON", {

@@ -19,12 +19,13 @@ const setTokenCookie = (res, token) => {
 const generateJwtToken = (user) => {
   // create a jwt token containing the user id that expires in 15 minutes
   return jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m",
+    expiresIn: "30m",
   });
 };
 
 const generateRefreshToken = (user) => {
   // create a refresh token that expires in 7 days
+
   return new RefreshToken({
     user: user.id,
     token: crypto.randomBytes(40).toString("hex"),
@@ -32,10 +33,23 @@ const generateRefreshToken = (user) => {
   });
 };
 
-const getRefreshToken = async (token) => {
-  const refreshToken = await RefreshToken.findOne({ token }).populate("user");
-  if (!refreshToken || !refreshToken.isActive) throw "Invalid token";
-  return refreshToken;
+const getRefreshToken = async (res, token) => {
+  try {
+    const refreshToken = await RefreshToken.findOne({ token }).populate("user");
+    console.log(`refreshToken is Expired?: ${refreshToken.isExpired}`);
+
+    if (!refreshToken) throw "토큰 정보가 없습니다.";
+
+    if (refreshToken.isExpired) {
+      await refreshToken.remove();
+      res.clearCookie("refreshToken");
+      throw "토큰 인증 기간이 만료되었습니다. 다시 로그인해주세요.";
+    }
+
+    return refreshToken;
+  } catch (err) {
+    return res.status(400).json({ msg: err });
+  }
 };
 
 const filterUserDetails = (user) => {
@@ -76,12 +90,32 @@ const loginUser = async (req, res, next) => {
 
     // save refresh token and set refresh token to cookie
     await refreshToken.save();
+    console.log(refreshToken.token);
     setTokenCookie(res, refreshToken.token);
 
     // return basic details and tokens
     res.status(200).json({ user: filterUserDetails(user), jwtToken });
   } catch (err) {
-    throw Error(err);
+    console.log(err);
+    res.status(500).json({ msg: "유저 정보 없음" });
+  }
+};
+
+const logoutUser = async (req, res, next) => {
+  try {
+    console.log(req.user);
+    const refreshToken = req.cookies.refreshToken;
+
+    if (refreshToken !== req.user.refreshToken.token)
+      return res.status(401).json({ msg: "토큰이 일치하지 않습니다." });
+
+    await req.user.refreshToken.remove();
+
+    res.clearCookie("refreshToken");
+    res.status(200).json({ msg: "logout 성공" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ msg: err });
   }
 };
 
@@ -104,20 +138,22 @@ const getUser = async (req, res, next) => {
 };
 
 const silentRefresh = async (req, res, next) => {
-  const token = req.cookies.refreshToken;
-  const refreshToken = await getRefreshToken(token);
-  const { user } = refreshToken;
+  try {
+    const token = req.cookies.refreshToken;
+    const refreshToken = await getRefreshToken(res, token);
+    const { user } = refreshToken;
 
-  // replace old refresh token with a new one and save
-  const jwtToken = generateJwtToken(user);
-  const newRefreshToken = generateRefreshToken(user);
-  refreshToken.revoked = Date.now();
-  refreshToken.replacedByToken = newRefreshToken.token;
-  await refreshToken.save();
-  await newRefreshToken.save();
+    // replace old refresh token with a new one and save
+    const jwtToken = generateJwtToken(user);
+    const newRefreshToken = generateRefreshToken(user);
+    await refreshToken.remove();
+    await newRefreshToken.save();
 
-  setTokenCookie(res, refreshToken);
-  res.status(200).json({ user: filterUserDetails(user), jwtToken });
+    setTokenCookie(res, newRefreshToken.token);
+    res.status(200).json({ user: filterUserDetails(user), jwtToken });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // async function revokeToken({ token, ipAddress }) {
@@ -146,6 +182,7 @@ const silentRefresh = async (req, res, next) => {
 module.exports = {
   createUser,
   loginUser,
+  logoutUser,
   getUser,
   silentRefresh,
   // refreshToken,
