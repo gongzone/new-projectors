@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Link, NavLink } from "react-router-dom";
+
+import { FiMenu } from "react-icons/fi";
 import { useGetUserDetail, useLogout } from "../../hooks/user-api";
 
 const Header = () => {
@@ -39,13 +41,15 @@ const Header = () => {
 };
 
 const Wrapper = styled.header`
+  position: relative;
+  z-index: 99;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 8rem;
-  margin-bottom: 3rem;
   background-color: #5eaca0;
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 35%);
+  margin-bottom: 3rem;
 
   .header-title {
     color: white;

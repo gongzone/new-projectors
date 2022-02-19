@@ -15,7 +15,7 @@ const validateRequest = (req, next, schema) => {
     .catch((err) => {
       next(
         createCustomError(
-          `Validation error: ${err.inner.map((e) => e.message).join(", ")}`,
+          `Validation errors: ${err.inner.map((e) => e.message).join(", ")}`,
           400
         )
       );
@@ -43,7 +43,10 @@ const validateSignup = (req, res, next) => {
       .required("필수 입력 항목입니다."),
     password2: yup
       .string()
-      .oneOf([yup.ref("password"), null])
+      .oneOf(
+        [yup.ref("password"), null],
+        "비밀번호와 비밀번호 확인은 일치해야 합니다."
+      )
       .required(),
   });
   validateRequest(req, next, schema);

@@ -20,7 +20,7 @@ const APILoading = () => {
 
 const Wrapper = styled.div`
   position: absolute;
-  z-index: 99;
+  z-index: 100;
   width: 100vw;
   height: 100vh;
   background-color: #ffffff;

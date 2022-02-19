@@ -5,7 +5,7 @@ import jwt_decode from "jwt-decode";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "/api/v1/user",
+  baseURL: "/api/v1/users",
 });
 
 export const useSignup = () => {

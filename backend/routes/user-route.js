@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const authorize = require("../middlewares/auth-token");
+const auth = require("../middlewares/auth");
 const {
   validateSignup,
   validateLogin,
@@ -19,9 +19,9 @@ router.route("/register/").post(validateSignup, createUser);
 
 router.route("/login/").post(validateLogin, loginUser);
 
-router.route("/logout/").post(authorize(), logoutUser);
+router.route("/logout/").post(auth(), logoutUser);
 
-router.route("/:id/").get(authorize(), getUser);
+router.route("/:id/").get(auth(), getUser);
 
 router.route("/silent-refresh/").post(silentRefresh);
 

@@ -1,6 +1,3 @@
-require("dotenv").config();
-
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
@@ -21,7 +18,7 @@ const setTokenCookie = (res, token) => {
 const generateJwtToken = (user) => {
   // create a jwt token containing the user id that expires in 30 minutes
   return jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "30m",
+    expiresIn: process.env.ACCESS_TOKEN_LIFETIME,
   });
 };
 
@@ -56,12 +53,8 @@ const filterUserDetails = (user) => {
   return { id, email, nickname, role };
 };
 
-const isValidId = (id) => {
-  return mongoose.Types.ObjectId.isValid(id);
-};
-
 // controllers...
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
     const { email, nickname, password, password2 } = req.body;
 
@@ -84,6 +77,9 @@ const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.login(email, password);
 
+    // 만약 해당 유저가 db에 리프레시 토큰을 가지고 있다면 찾아서 delete한다.
+    await RefreshToken.findOneAndDelete({ user: user.id });
+
     // authentication successful so generate jwt and refresh tokens
     const jwtToken = generateJwtToken(user);
     const refreshToken = generateRefreshToken(user);
@@ -101,15 +97,16 @@ const loginUser = async (req, res, next) => {
 
 const logoutUser = async (req, res, next) => {
   try {
-    console.log(req.user);
     const refreshToken = req.cookies.refreshToken;
+    const userRefreshToken = await RefreshToken.findOne({ user: req.user.id });
 
-    if (refreshToken !== req.user.refreshToken.token)
+    if (refreshToken !== userRefreshToken.token)
       throw createCustomError("토큰 정보가 일치하지 않습니다.", 401);
 
-    await req.user.refreshToken.remove();
-
+    // RefreshToken DB에서 삭제 && 브라우저 쿠키에서 삭제
+    await userRefreshToken.remove();
     res.clearCookie("refreshToken");
+
     res.status(200).json({ msg: "logout 성공" });
   } catch (err) {
     next(err);
@@ -120,20 +117,12 @@ const getUser = async (req, res, next) => {
   try {
     const paramsId = req.params.id;
     const userId = req.user.id;
-    const userRole = req.user.role;
 
-    if (paramsId !== userId && userRole !== "Admin") {
+    if (paramsId !== userId) {
       throw createCustomError("해당 접근에 대한 권한이 없습니다.", 401);
     }
 
-    if (!isValidId(userId))
-      throw createCustomError("해당 사용자 아이디는 유효하지 않습니다.", 401);
-
-    const user = await User.findById(id);
-
-    if (!user) throw createCustomError("해당 사용자를 찾을 수 없습니다.", 401);
-
-    res.status(200).json(filterUserDetails(user));
+    res.status(200).json(filterUserDetails(req.user));
   } catch (err) {
     next(err);
   }

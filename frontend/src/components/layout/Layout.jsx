@@ -2,16 +2,18 @@ import React from "react";
 import styled from "styled-components";
 
 import Header from "./Header";
+import SideMenu from "./SideMenu";
 import Footer from "./Footer";
 
 import { useSilentRefresh } from "../../hooks/user-api";
 
 const Layout = ({ children }) => {
-  useSilentRefresh(); // silentRefresh enable 옵션 생각, localstorage에 로그인했다는 정보를 담고 그것을 토대로 실행??
+  useSilentRefresh(); // localstorage에 로그인했다는 정보를 담고 enable option 고려, withcredential 필요?
 
   return (
     <Wrapper>
       <Header />
+      <SideMenu />
       <main className="layout-main">{children}</main>
       <Footer />
     </Wrapper>
@@ -23,6 +25,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     width: 60%;
+    padding-left: 27rem;
     margin: 0 auto;
   }
 `;
