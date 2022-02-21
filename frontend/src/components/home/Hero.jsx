@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import projector from "../assets/images/projector2.png";
+import projector from "../../assets/images/projector2.png";
 
 const Hero = () => {
   return (

@@ -10,6 +10,7 @@ import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import PostEditing from "./pages/PostEditing";
 import ShowRoom from "./pages/ShowRoom";
 import Team from "./pages/Team";
 import Community from "./pages/Community";
@@ -42,6 +43,7 @@ const App = () => {
               <Route path="/" component={Home} exact />
               <Route path="/signup/" component={Signup} exact />
               <Route path="/login/" component={Login} exact />
+              <Route path="/postedit/" component={PostEditing} exact />
               <Route path="/showroom/" component={ShowRoom} exact />
               <Route path="/team/" component={Team} exact />
               <Route path="/community/" component={Community} exact />
