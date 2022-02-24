@@ -4,6 +4,7 @@
 
 ### Front ###
 node_modules/
+build/
 .env
 
 ## Back ###

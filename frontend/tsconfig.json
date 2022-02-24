@@ -1,29 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es5", // Specify ECMAScript target version
-    "lib": ["dom", "dom.iterable", "esnext"], // List of library files to be included in the compilation
-    "allowJs": true, // Allow JavaScript files to be compiled
-    "skipLibCheck": true, // Skip type checking of all declaration files
-    "esModuleInterop": true, // Disables namespace imports (import * as fs from "fs") and enables CJS/AMD/UMD style imports (import fs from "fs")
-    "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
-    "strict": true, // Enable all strict type checking options
-    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file.
-    "module": "esnext", // Specify module code generation
-    "moduleResolution": "node", // Resolve modules using Node.js style
-    "isolatedModules": true, // Unconditionally emit imports for unresolved files
-    "resolveJsonModule": true, // Include modules imported with .json extension
-    "noEmit": true, // Do not emit output (meaning do not compile code, only perform type checking)
-    "jsx": "react", // Support JSX in .tsx files
-    "sourceMap": true, // Generate corrresponding .map file
-    "declaration": true, // Generate corresponding .d.ts file
-    "noUnusedLocals": true, // Report errors on unused locals
-    "noUnusedParameters": true, // Report errors on unused parameters
-    "incremental": true, // Enable incremental compilation by reading/writing information from prior compilations to a file on disk
-    "noFallthroughCasesInSwitch": true // Report errors for fallthrough cases in switch statement
+    "target": "ES5" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
+    "module": "ESNext" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
+    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */ /* Type declaration files to be included in compilation. */,
+    "lib": ["DOM", "ESNext"] /* Specify library files to be included in the compilation. */,
+    "jsx": "react-jsx" /* Specify JSX code generation: 'preserve', 'react-native', 'react' or 'react-jsx'. */,
+    "noEmit": true /* Do not emit outputs. */,
+    "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */,
+    "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
+    "strict": true /* Enable all strict type-checking options. */,
+    "skipLibCheck": true /* Skip type checking of declaration files. */,
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
+    "resolveJsonModule": true,
+    "allowJs": true /* Allow javascript files to be compiled. Useful when migrating JS to TS */,
+    "checkJs": true /* Report errors in .js files. Works in tandem with allowJs. */
   },
-  "include": [
-    "src/**/*",
-    "src/index.tsx" // *** The files TypeScript should type check ***
-  ],
-  "exclude": ["node_modules", "build"] // *** The files to not type check ***
+  "include": ["src/**/*"]
 }
