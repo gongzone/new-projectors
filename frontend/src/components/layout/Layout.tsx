@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import Header from "./Header";
-import SideMenu from "./SideMenu";
-import Footer from "./Footer";
+import Header from './Header';
+import SideMenu from './SideMenu';
+import Footer from './Footer';
 
-import { useSilentRefresh } from "../../hooks/user-api";
+import { useSilentRefresh } from '../../hooks/user-api';
 
-const Layout = ({ children }) => {
+const Layout: React.FC = ({ children }) => {
   useSilentRefresh(); // localstorage에 로그인했다는 정보를 담고 enable option 고려, withcredential 필요?
 
   return (

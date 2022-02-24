@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Post = new Schema({
+const PostSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
-  title: {},
-  content: {},
-  image,
+  content: {
+    type: Array,
+  },
 });
+
+module.exports = mongoose.model("Post", PostSchema);
