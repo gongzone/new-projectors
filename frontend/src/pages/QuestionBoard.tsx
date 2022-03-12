@@ -1,6 +1,6 @@
 import Layout from '../components/layout/Layout';
 
-const Home = () => {
+const QuestionBoard = () => {
   return (
     <Layout>
       <h1>홈페이지 입니다!</h1>
@@ -8,4 +8,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default QuestionBoard;

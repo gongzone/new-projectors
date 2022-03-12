@@ -1,21 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Roboto:wght@400;700&display=swap');
+import { createGlobalStyle } from 'styled-components';
+
+const CustomGlobalStyle = createGlobalStyle`
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Roboto:wght@400;700&display=swap');
 
 html {
   width: 100%;
   height: 100%;
   font-size: 62.5%;
-  line-height: 1.3; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
+  line-height: 1.3; 
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   overflow-x: hidden;
   max-width: 100vw;
   min-height: 100vh;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   font-size: 1.6rem;
-  background: #ffffff;
+  background: #eae7dd;
   box-sizing: border-box;
   font-family: 'Roboto', 'Noto Sans KR', arial, sans-serif;
   color: #3d3d3d;
@@ -33,9 +36,14 @@ ul {
 }
 
 button {
+  font-family: 'Roboto', 'Noto Sans KR', arial, sans-serif;
   border: 0;
 }
 
 p {
   margin: 0;
 }
+
+`;
+
+export default CustomGlobalStyle;

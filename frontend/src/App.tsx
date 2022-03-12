@@ -1,22 +1,18 @@
-import './assets/css/sanitize.css';
-import './assets/css/global.css';
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider, QueryCache } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { Provider as ReduxProvider } from 'react-redux';
 import { toast } from 'react-hot-toast';
 
-// import Layout from './components/layout/Layout';
-import Home from './pages/Home';
-// import Signup from './pages/Signup';
-// import Login from './pages/Login';
-// import PostEditing from './pages/PostEditing';
-// import ShowRoom from './pages/ShowRoom';
-// import Team from './pages/Team';
-// import Community from './pages/Community';
+import Sanitize from './assets/styles/Sanitize';
+import CustomGlobalStyle from './assets/styles/CustomGlobalStyle';
+import { store } from './store/store';
 
-// import APILoading from './components/APILoading';
-// import ErrorBoundary from './components/ErrorBoundary';
+import Home from './pages/Home';
+import ShowRoom from './pages/ShowRoom';
+import Team from './pages/Team';
+import Community from './pages/Community';
+import QuestionBoard from './pages/QuestionBoard';
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -34,25 +30,22 @@ const queryClient = new QueryClient({
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        {/* <ErrorBoundary>
-          <APILoading /> */}
-        {/* <Layout> */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          {/* <Route path="/signup/" element={<Signup />} />
-              <Route path="/login/" element={<Login />} />
-              <Route path="/postedit/" element={<PostEditing />} />
-              <Route path="/showroom/" element={<ShowRoom />} />
-              <Route path="/team/" element={<Team />} />
-              <Route path="/community/" element={<Community />} /> */}
-        </Routes>
-        {/* </Layout>
-        </ErrorBoundary> */}
-      </BrowserRouter>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <ReduxProvider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <Sanitize />
+        <CustomGlobalStyle />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="showroom" element={<ShowRoom />} />
+            <Route path="/team" element={<Team />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/questionboard" element={<QuestionBoard />} />
+          </Routes>
+        </BrowserRouter>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ReduxProvider>
   );
 };
 

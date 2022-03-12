@@ -1,11 +1,11 @@
 import Layout from '../components/layout/Layout';
 
-const Home = () => {
+const Team = () => {
   return (
     <Layout>
-      <h1>홈페이지 입니다!</h1>
+      <h1>Team</h1>
     </Layout>
   );
 };
 
-export default Home;
+export default Team;

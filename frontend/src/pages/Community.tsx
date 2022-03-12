@@ -1,11 +1,11 @@
 import Layout from '../components/layout/Layout';
 
-const Home = () => {
+const Community = () => {
   return (
     <Layout>
-      <h1>홈페이지 입니다!</h1>
+      <h1>QuestionBoard</h1>
     </Layout>
   );
 };
 
-export default Home;
+export default Community;

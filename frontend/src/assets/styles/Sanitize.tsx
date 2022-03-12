@@ -1,4 +1,7 @@
-/* Document
+import { createGlobalStyle } from 'styled-components';
+
+const Sanitize = createGlobalStyle`
+  /* Document
  * ========================================================================== */
 
 /**
@@ -55,8 +58,8 @@ body {
 }
 
 /**
- * Correct the font size and margin on `h1` elements within `section` and
- * `article` contexts in Chrome, Edge, Firefox, and Safari.
+ * Correct the font size and margin on 'h1' elements within 'section' and
+ * 'article' contexts in Chrome, Edge, Firefox, and Safari.
  */
 
 h1 {
@@ -120,7 +123,7 @@ nav ul {
 
 /**
  * 1. Correct the inheritance and scaling of font size in all browsers.
- * 2. Correct the odd `em` font sizing in all browsers.
+ * 2. Correct the odd 'em' font sizing in all browsers.
  */
 
 pre {
@@ -159,7 +162,7 @@ strong {
 
 /**
  * 1. Correct the inheritance and scaling of font size in all browsers.
- * 2. Correct the odd `em` font sizing in all browsers.
+ * 2. Correct the odd 'em' font sizing in all browsers.
  */
 
 code,
@@ -308,7 +311,7 @@ input {
 
 /**
  * 1. Correct the text wrapping in Edge 18- and IE.
- * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 2. Correct the color inheritance from 'fieldset' elements in IE.
  */
 
 legend {
@@ -395,7 +398,7 @@ textarea {
 
 /**
  * 1. Correct the inability to style upload buttons in iOS and Safari.
- * 2. Change font properties to `inherit` in Safari.
+ * 2. Change font properties to 'inherit' in Safari.
  */
 
 ::-webkit-file-upload-button {
@@ -564,3 +567,6 @@ textarea,
   clip: rect(0, 0, 0, 0);
   position: absolute;
 }
+`;
+
+export default Sanitize;
