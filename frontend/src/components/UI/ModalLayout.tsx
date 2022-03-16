@@ -5,12 +5,15 @@ import { IoMdClose } from 'react-icons/io';
 
 import { closeLoginModal, closeRegisterModal } from '../../store/modalSlice';
 
+import Card from './Card';
+
 interface ModalWrapperProps {
   title: string;
+  modalState: boolean;
   children: ReactNode;
 }
 
-const ModalLayout = ({ title, children }: ModalWrapperProps) => {
+const ModalLayout = ({ title, modalState, children }: ModalWrapperProps) => {
   const dispatch = useDispatch();
 
   const newTitle =
@@ -26,20 +29,34 @@ const ModalLayout = ({ title, children }: ModalWrapperProps) => {
   };
 
   return (
-    <StyledModalWrapper>
-      <header className="modal-header">
-        <button onClick={closeModalHandler} className="modal-header-close">
-          <IoMdClose />
-        </button>
-        <span className="modal-header-title">{newTitle}</span>
-      </header>
-      {children}
-      <footer></footer>
-    </StyledModalWrapper>
+    <Card>
+      <ModalLayoutWrapper isOpen={modalState}>
+        <header className="modal-header">
+          <button onClick={closeModalHandler} className="modal-header-close">
+            <IoMdClose />
+          </button>
+          <span className="modal-header-title">{newTitle}</span>
+        </header>
+        {children}
+        <footer></footer>
+      </ModalLayoutWrapper>
+    </Card>
   );
 };
 
-const StyledModalWrapper = styled.div`
+const ModalLayoutWrapper = styled.div<{ isOpen: boolean }>`
+  position: fixed;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  min-width: 50rem;
+  padding: 4rem 5rem;
+  background-color: #f4f7f6;
+  visibility: ${({ isOpen }) => (isOpen ? 'visible' : 'hidden')};
+  opacity: ${({ isOpen }) => (isOpen ? '1' : '0')};
+  transform: ${({ isOpen }) => (isOpen ? 'translate(-50%, -50%)' : 'translate(-50%, -45%)')};
+  transition: all 0.3s;
+
   .modal-header {
     display: flex;
     align-items: center;
