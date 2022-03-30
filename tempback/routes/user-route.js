@@ -15,7 +15,7 @@ const {
   silentRefresh,
 } = require("../controllers/user-controller");
 
-router.route("/register/").post(validateSignup, createUser);
+router.route("/signup/").post(validateSignup, createUser);
 
 router.route("/login/").post(validateLogin, loginUser);
 
