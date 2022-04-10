@@ -1,12 +1,12 @@
 ### Common ###
+node_modules/
 .vscode/
 .cache/
 
 ### Front ###
-node_modules/
 build/
 .env
 
-## Back ###
+### Back ###
 env/
 secrets.json
